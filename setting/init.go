@@ -5,6 +5,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"github.com/stworker/models/base"
 )
 
 // 初始化框架
@@ -15,11 +16,8 @@ func Init() (err error) {
 		return err
 	}
 
-	// 初始化model
-	/*err = models.Init()
-	if err != nil {
-		return err
-	}*/
+	// 初始化数据库
+	base.DbShop.InitOrm("dbshop")
 
 	return nil
 }
@@ -41,7 +39,7 @@ func InitLogger() error {
 	logs.Async()
 	logs.EnableFuncCallDepth(true)
 	logs.SetLogger(logs.AdapterMultiFile, string(configStr))
-	logs.Debug("Start apiadmin for beego.")
+	logs.Debug("Start stworker for beego.")
 	return nil
 }
 
