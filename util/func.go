@@ -1,4 +1,4 @@
-package libs
+package util
 
 import (
 	"crypto/md5"
@@ -42,4 +42,14 @@ func GetPasswdString(passwd string) (string, string) {
 	pwd := hex.EncodeToString(md5Sum.Sum(nil))
 	fmt.Println(passwd + salt)
 	return pwd, salt
+}
+
+/**
+ * 生成数字
+ * @param rangeNum int 	// 数字范围
+ * @return int
+ */
+func GetRandNum(rangeNum int) int {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return r.Intn(rangeNum)
 }

@@ -1,13 +1,13 @@
 package base
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
+	"github.com/stworker/util"
 )
 
 // model公共类
@@ -33,7 +33,7 @@ func (this *BaseModel) GetSlave() (engine *xorm.Engine, err error) {
  * @param group string  // 分组名称
  * @return void
  */
-func (this *BaseModel) InitOrm(group string) (err error) {
+func (this *BaseModel) InitOrm(groups string) (err error) {
 	// 初始化orm
 	this.masterOrm = make(map[string]interface{})
 
@@ -46,15 +46,10 @@ func (this *BaseModel) InitOrm(group string) (err error) {
 	this.masterOrm[group] = mOrm
 
 	// 链接Slave
-	test := strings.Split(beego.AppConfig.String("dbshop.slave.dsn"), ",")
-	fmt.Println(len(test))
-	/*
-		this.slaveOrm = make(map[string]interface{})
-		masterDns := beego.AppConfig.String("dbshop.master.dsn")
-		mOrm, err := xorm.NewEngine("mysql", masterDns)
-		if err != nil {
-			return err
-		}*/
+	sOrm := strings.Split(beego.AppConfig.String("dbshop.slave.dsn"), ",")
+	curSOrm := sOrm[util.GetRandNum(len(sOrm))]
+	this.slaveOrm = make(map[string]interface{})
+	this.slaveOrm[group] = curSOrm
 
 	return nil
 }

@@ -16,7 +16,7 @@ func Init() (err error) {
 		return err
 	}
 
-	// 初始化数据库
+	// 初始化数据库链接，多个数据库名称逗号隔开
 	base.DbShop.InitOrm("dbshop")
 
 	return nil
