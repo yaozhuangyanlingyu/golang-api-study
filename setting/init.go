@@ -17,7 +17,12 @@ func Init() (err error) {
 	}
 
 	// 初始化数据库链接，多个数据库名称逗号隔开
-	base.DbShop.InitOrm("dbshop")
+	err = base.DbShop.InitOrm("dbshop")
+	if err != nil {
+		return err
+	}
+	//x, _ := base.DbShop.GetSlave(base.DbShop.GroupName)
+	//fmt.Println(x)
 
 	return nil
 }

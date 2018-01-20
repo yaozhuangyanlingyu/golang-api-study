@@ -26,7 +26,7 @@ type ActiveAdItemsModel struct {
  */
 func (this *ActiveAdItemsModel) GetAdItemList(page, pageSize int) (list []ActiveAdItemsModel, count int64, err error) {
 	// 获取数据库链接
-	x, _ := base.DbShop.GetSlave()
+	x, _ := base.DbShop.GetSlave(base.DbShop.GroupName)
 
 	// 查询数据
 	list = make([]ActiveAdItemsModel, 0)
