@@ -21,10 +21,6 @@ func Init() (err error) {
 	if err != nil {
 		return err
 	}
-	err = base.DbUser.InitOrm(base.DbUser.GroupName)
-	if err != nil {
-		return err
-	}
 
 	return nil
 }
