@@ -15,4 +15,7 @@ func init() {
 func apiControllerRouter() {
 	// 活动相关控制器
 	beego.Router("api/activity/aditemlist", &api.ActivityController{}, "get:AdItemList")
+
+	// 用户相关控制器
+	beego.Router("api/user/:id", &api.UserController{}, "get:GetUserById")
 }
