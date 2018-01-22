@@ -61,35 +61,32 @@ func (this *BaseModel) GetOrmEngine(groupName string, isMaster bool) (engine *xo
  * @param group string  // 分组名称
  * @return void
  */
-func (this *BaseModel) InitDbConn(groups string) (err error) {
-	groupsArr := strings.Split(groups, ",")
+func (this *BaseModel) InitDbConn(groupName string) (err error) {
 	this.masterOrm = make(map[string]*xorm.Engine)
 	this.slaveOrm = make(map[string]*xorm.Engine)
 
-	for _, groupName := range groupsArr {
-		// 链接主库
-		mDsn := beego.AppConfig.String(groupName + ".master.dsn")
-		if len(mDsn) == 0 {
-			return errors.New(groupName + "配置不正确")
-		}
-		mEngine, err := this.InitOrm(mDsn)
-		if err != nil {
-			return err
-		}
-		this.masterOrm[groupName] = mEngine
-
-		// 链接Slave
-		sDsns := strings.Split(beego.AppConfig.String(groupName+".slave.dsn"), ",")
-		if len(sDsns) == 0 {
-			return errors.New(groupName + "配置不正确")
-		}
-		sdsn := sDsns[util.GetRandNum(len(sDsns))]
-		sEngine, err := this.InitOrm(sdsn)
-		if err != nil {
-			return err
-		}
-		this.slaveOrm[groupName] = sEngine
+	// 链接主库
+	mDsn := beego.AppConfig.String(groupName + ".master.dsn")
+	if len(mDsn) == 0 {
+		return errors.New(groupName + "配置不正确")
 	}
+	mEngine, err := this.InitOrm(mDsn)
+	if err != nil {
+		return err
+	}
+	this.masterOrm[groupName] = mEngine
+
+	// 链接Slave
+	sDsns := strings.Split(beego.AppConfig.String(groupName+".slave.dsn"), ",")
+	if len(sDsns) == 0 {
+		return errors.New(groupName + "配置不正确")
+	}
+	sdsn := sDsns[util.GetRandNum(len(sDsns))]
+	sEngine, err := this.InitOrm(sdsn)
+	if err != nil {
+		return err
+	}
+	this.slaveOrm[groupName] = sEngine
 
 	return nil
 }
