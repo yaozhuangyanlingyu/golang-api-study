@@ -17,7 +17,7 @@ func Init() (err error) {
 	}
 
 	// 初始化数据库链接
-	err = base.DbShop.InitOrm(base.DbShop.GroupName)
+	err = base.DbShop.InitDbConn(base.DbShop.GroupName)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func InitLogger() error {
 	config := make(map[string]interface{})
 	config["filename"] = beego.AppConfig.String("log.path")
 	config["level"] = GetLogLevel(beego.AppConfig.String("log.level"))
-	config["maxlines"] = 100
+	config["maxlines"] = 100000
 	config["separate"] = []string{"error"}
 	configStr, err := json.Marshal(config)
 	if err != nil {

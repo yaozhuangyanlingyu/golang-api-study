@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 const (
@@ -14,6 +16,17 @@ const (
 // 公共控制器
 type CommonController struct {
 	beego.Controller
+}
+
+// 初始化
+func (this *CommonController) Prepare() {
+	// 记录日志
+	this.WriteRequestLog()
+}
+
+// 记录请求日志
+func (this *CommonController) WriteRequestLog() {
+	logs.Trace(fmt.Sprintf("%s %s Header: %s Body: %s", this.Ctx.Request.Method, this.Ctx.Request.URL, this.Ctx.Request.Header, this.Ctx.Request.Body))
 }
 
 // AJAX返回提示信息

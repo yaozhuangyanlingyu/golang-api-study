@@ -2,6 +2,7 @@ package base
 
 import (
 	"errors"
+	"os"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -56,11 +57,11 @@ func (this *BaseModel) GetOrmEngine(groupName string, isMaster bool) (engine *xo
 }
 
 /**
- * 初始化orm
+ * 初始化db连接
  * @param group string  // 分组名称
  * @return void
  */
-func (this *BaseModel) InitOrm(groups string) (err error) {
+func (this *BaseModel) InitDbConn(groups string) (err error) {
 	groupsArr := strings.Split(groups, ",")
 	this.masterOrm = make(map[string]*xorm.Engine)
 	this.slaveOrm = make(map[string]*xorm.Engine)
@@ -71,7 +72,7 @@ func (this *BaseModel) InitOrm(groups string) (err error) {
 		if len(mDsn) == 0 {
 			return errors.New(groupName + "配置不正确")
 		}
-		mEngine, err := xorm.NewEngine("mysql", mDsn)
+		mEngine, err := this.InitOrm(mDsn)
 		if err != nil {
 			return err
 		}
@@ -83,7 +84,7 @@ func (this *BaseModel) InitOrm(groups string) (err error) {
 			return errors.New(groupName + "配置不正确")
 		}
 		sdsn := sDsns[util.GetRandNum(len(sDsns))]
-		sEngine, err := xorm.NewEngine("mysql", sdsn)
+		sEngine, err := this.InitOrm(sdsn)
 		if err != nil {
 			return err
 		}
@@ -91,6 +92,31 @@ func (this *BaseModel) InitOrm(groups string) (err error) {
 	}
 
 	return nil
+}
+
+/**
+ * 初始化orm
+ * @param dsn string  // 数据库DSN字符串
+ * @return orm
+ */
+func (this *BaseModel) InitOrm(dsn string) (orm *xorm.Engine, err error) {
+	// 创建orm链接
+	orm, err = xorm.NewEngine("mysql", dsn)
+	if err != nil {
+		return orm, err
+	}
+
+	// 输出日志
+	orm.ShowSQL(false)
+	os.MkdirAll("./logs", os.ModePerm)
+	f, err := os.OpenFile("logs/sql.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0664)
+	if err != nil {
+		return orm, err
+	}
+	orm.SetLogger(xorm.NewSimpleLogger(f))
+	orm.Logger().SetLevel(core.LOG_INFO)
+
+	return orm, nil
 }
 
 // 计算分页位置
