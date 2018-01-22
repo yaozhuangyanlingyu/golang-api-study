@@ -68,7 +68,7 @@ function reload() {
 	fi	
 
 	# 软重启
-	`kill -12 $pid`	
+	`kill -HUP $pid`	
 	if [ $? -ge 1 ]; then
 		echo "${SERVICE_FLAG} reload fiald." >> $LOG
 	else

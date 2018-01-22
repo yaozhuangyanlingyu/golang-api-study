@@ -4,9 +4,8 @@
 cd $GOPATH/src/github.com/
 git clone git@github.com:yaozhuangyanlingyu/stworker.git
 cd stworker
-
-
-
+go build -o bin/stworker
+./server.sh start
 
 # 统计库数据查询API接口
 ## 获取推广ID列表
